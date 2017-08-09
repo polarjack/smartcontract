@@ -3,13 +3,19 @@ pragma solidity ^0.4.11;
 contract Certificate {
     address public student;
     uint head = 1;
-    // bool if25 = false;
+    bool if25 = false;
 
-    // address[25] public saveVideos;
-    // uint counter = 0;
+    address[25] public saveVideos;
+    uint counter = 0;
 
     mapping(bytes32 => uint) public videos;
     
+    struct Video {
+        uint id;
+        bytes32 info;
+        
+    }
+
     function addVideos(bytes32 input) {
         assert(getIndex(input) > 0);
         assert(head < 26);
