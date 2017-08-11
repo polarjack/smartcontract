@@ -1,27 +1,32 @@
 pragma solidity ^0.4.11;
 
 contract Admin {
-    address public owner = 0x0;
-    uint[300] public saveStudent;
-    uint public indexSaveStudent = 0;
     
     struct Student {
         address who;
+        uint cerIndex;
+        address[10] certificates;
         mapping(address => uint) certificates;
         uint status;
     }
-    mapping(uint => Student) public members;
     
     event MemberChange(address changer, uint studentId, uint status);
     event MemberCertificateChange(address changer, uint studentId, address certificate, uint status);
     
+    modifier checkStudentIndex() {
+        require(indexSaveStudent < 300);
+        _:
+    }
+
     function Admin() {
         owner = msg.sender;
     }
 
-    function addStudent(uint studentId, address studentAddress) {
+    function addStudent(uint studentId, address studentAddress) checkStudentIndex {
         members[studentId].who = studentAddress;
         members[studentId].status = 1;
+        members[studentId].cerIndex = 0;
+        
         saveStudent[indexSaveStudent] = studentId;
         indexSaveStudent++;
         
@@ -34,6 +39,10 @@ contract Admin {
     }
     
     function addCertificate(uint studentId, address certificateAddress) {
+        uint index = members[studentId].cerIndex;
+        members[studentId].certificates[index] = certificateAddress;
+        members[studentId].cerIndex++;
+
         members[studentId].certificates[certificateAddress] = 1;
         
         MemberCertificateChange(msg.sender, studentId, certificateAddress, 1);
@@ -54,4 +63,10 @@ contract Admin {
             return members[studentId].certificates[certificate];
         }
     }
+
+    address public owner = 0x0;
+    uint[300] public saveStudent;
+    uint public indexSaveStudent = 0;
+
+    mapping(uint => Student) public members;
 }
