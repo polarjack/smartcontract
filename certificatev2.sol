@@ -67,7 +67,7 @@ contract Certificate {
         return max_length + 1;
     }
 
-    function confirmCount() {
+    function confirmCount() returns (bool){
         uint count = 0;
         for(uint index; index < max_length; index++) {
             if(videos[index].status == Status.Confirmed) {
@@ -77,6 +77,7 @@ contract Certificate {
         if(count == 25) {
             if_confirmed = true;
         }
+        return if_confirmed;
     }
        
     function findVideo(uint _videoId) returns (bool) {
