@@ -66,6 +66,18 @@ contract Certificate {
         empty_place = max_length + 1;
         return max_length + 1;
     }
+
+    function confirmCount() {
+        uint count = 0;
+        for(uint index; index < max_length; index++) {
+            if(videos[index].status == Status.Confirmed) {
+                count++;
+            }
+        }
+        if(count == 25) {
+            if_confirmed = true;
+        }
+    }
        
     function findVideo(uint _videoId) returns (bool) {
         if(videoIndex[_videoId] < 0) {
@@ -85,7 +97,8 @@ contract Certificate {
     uint empty_place = 26;
 
     uint confirmed_count = 0;
-    
+    bool if_confirmed = false;
+
     mapping (uint => uint) videoIndex;
     Video[50] public videos;
 }

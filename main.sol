@@ -46,7 +46,7 @@ contract Admin {
     }
 
     //status code: 0 => not exist, 1 => exist , 2 => userInvalid
-    function ifSingleCertificateExist(uint studentId, address certificate) returns (uint){
+    function ifSingleCertificateExist(uint studentId, address certificate) returns (uint) {
         if(members[studentId].status == 0) {
             return 2;
         }
