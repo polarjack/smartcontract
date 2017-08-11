@@ -9,7 +9,6 @@ contract Certificate {
         Status status;
     }
     
-    
     modifier checkCounter {
         require(current_counter < 25);
         _;
@@ -26,11 +25,15 @@ contract Certificate {
     }
     
     function addVideo(uint _videoId, bytes32 _info) checkCounter onlyVideo(_videoId) {
-        videos[current_counter].info = _info;
-        videos[current_counter].videoId = _videoId;
-        videos[current_counter].status = Status.Waiting;
+        uint empty = renderEmptyPlace();
         
-        videoIndex[_videoId] = current_counter;
+        require(empty == empty_place);
+
+        videos[empty_place].info = _info;
+        videos[empty_place].videoId = _videoId;
+        videos[empty_place].status = Status.Waiting;
+        
+        videoIndex[_videoId] = empty_place;
         current_counter++;
     }
     
@@ -44,15 +47,24 @@ contract Certificate {
     function confirmVideo(uint _videoId, bytes32 _info) includeVideo(_videoId){
         uint index = videoIndex[_videoId];
         videos[index].status = Status.Confirmed;
+        confirmed_count++;
     }
 
     function failedVideo(uint _videoId, bytes32 _info) includeVideo(_videoId) {
         uint index = videoIndex[_videoId];
         videos[index].status = Status.Failed;
+        confirmed_count--;
     }
 
-    function renderEmptyPlace() checkCounter{
-
+    function renderEmptyPlace() checkCounter returns (uint) {
+        for(uint index; index < max_length; index++) {
+            if(!findVideo(videos[index].videoId)) {
+                empty_place = index;
+                return index;
+            }
+        }
+        empty_place = max_length + 1;
+        return max_length + 1;
     }
        
     function findVideo(uint _videoId) returns (bool) {
@@ -67,8 +79,10 @@ contract Certificate {
     
 
     uint current_counter = 0;
+
+    //handle certificate videos length
     uint max_length = 25;
-    uint empty_place = 0;
+    uint empty_place = 26;
 
     uint confirmed_count = 0;
     
