@@ -8,7 +8,10 @@ contract Certificate {
         bytes32 info;
         Status status;
     }
-    
+
+    event VideoChange(address _changer, uint _videoId, uint action);
+    event VideoStatusChange(address _changer, uint _videoId, Status _to);
+
     modifier checkCounter {
         require(current_counter < 25);
         _;
@@ -23,7 +26,7 @@ contract Certificate {
         require(findVideo(_videoId));
         _;
     }
-    
+
     function addVideo(uint _videoId, bytes32 _info) checkCounter onlyVideo(_videoId) {
         uint empty = renderEmptyPlace();
         
@@ -35,6 +38,8 @@ contract Certificate {
         
         videoIndex[_videoId] = empty_place;
         current_counter++;
+
+        VideoChage(msg.sender, _videoId, 1);
     }
     
     function deleteVideo(uint _videoId) includeVideo(_videoId) {
@@ -42,18 +47,24 @@ contract Certificate {
         delete videos[index];
         delete videoIndex[_videoId];
         current_counter--;
+
+        VideoChage(msg.sender, _videoId, 0);
     }
     
     function confirmVideo(uint _videoId, bytes32 _info) includeVideo(_videoId){
         uint index = videoIndex[_videoId];
         videos[index].status = Status.Confirmed;
         confirmed_count++;
+
+        VideoStatusChange(msg.sender, _videoId, Status.Confirmed);
     }
 
     function failedVideo(uint _videoId, bytes32 _info) includeVideo(_videoId) {
         uint index = videoIndex[_videoId];
         videos[index].status = Status.Failed;
         confirmed_count--;
+
+        VideoStatusChange(msg.sender, _videoId, Status.Failed);
     }
 
     function renderEmptyPlace() checkCounter returns (uint) {
