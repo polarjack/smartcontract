@@ -3,7 +3,6 @@ pragma solidity ^0.4.11;
 contract Student {
     address public creator = 0x0;
     address public student = 0x0;
-    address public previous = 0x0;
     
     bytes32[100] public savingVideos;
     address[10] public savingCertificates;
@@ -14,7 +13,7 @@ contract Student {
     mapping(bytes32 => uint) public videos;
     mapping(address => uint) public certificates;
    
-    event changeStudent(address beforeStudent, address afterStudent, address changer);
+    event ChangeStudent(address beforeStudent, address afterStudent, address changer);
     event VideoChange(address changer, bytes32 item, uint status);
     event CertificateChange(address changer, address item, uint status);
     
@@ -72,6 +71,7 @@ contract Student {
     
     //important function
     function ChangeStudent(address input) onlyOwner {
+        address previous = 0x0;
         previous = student;
         student = input;
         
