@@ -12,14 +12,14 @@ contract Admin {
     
     modifier checkStudentIndex() {
         require(indexSaveStudent < 300);
-        _:
+        _;
     }
 
     function Admin() {
         owner = msg.sender;
     }
 
-    function addStudent(address studentAddress) checkStudentIndex {
+    function addStudent(address studentId) checkStudentIndex {
         members[studentId].who = studentAddress;
         members[studentId].status = 1;
         

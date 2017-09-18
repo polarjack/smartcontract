@@ -33,17 +33,17 @@ contract Student {
     }
     
     //video part
-    function AddVideo(bytes32 inputV) {
+    function addVideo(bytes32 inputV) {
         videos[inputV] = 1;
         savingVideos[indexV] = inputV;
         indexV++;
         VideoChange(msg.sender, inputV, 1);
     }
-    function DeleteVideo(bytes32 inputV) {
+    function deleteVideo(bytes32 inputV) {
         videos[inputV] = 0;
         VideoChange(msg.sender, inputV, 0);
     }
-    function IfInside(bytes32 inputV) constant returns (uint){
+    function ifInside(bytes32 inputV) constant returns (uint){
         return videos[inputV];
     }
     
